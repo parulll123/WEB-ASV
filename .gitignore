@@ -1,0 +1,7 @@
+# Mengabaikan folder venv
+web_ASV/
+*.PNG
+*.webp
+# File cache Python
+__pycache__/
+*.pyc

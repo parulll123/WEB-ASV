@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring Misi</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-title">Cakra Vortex - Universitas Negeri Jakarta</div>
+        <div class="header-logo">
+            <img src="/templates/logo-unj-new-ptnbh.png" alt="">
+        </div> </header>        
+
+    <div class="dashboard-container">
+
+        <div class="left-column">
+            <div class="section position-log">
+                <h2>Lintasan: A</h2>
+                <h3>Floating Ball Set Cheklist</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cheklist</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>ball 1</td><td>Cheklist</td></tr>
+                        <tr><td>ball 2</td><td>Cheklist</td></tr>
+                        <tr><td>ball 3</td><td>Cheklist</td></tr>
+                        <tr><td>ball 4</td><td>Cheklist</td></tr>
+                        <tr><td>ball 5</td><td>Cheklist</td></tr>
+                    </tbody>
+                </table>
+                 </div>
+            <div class="section image-section">
+                <h3>Surface Image</h3>
+                <img src="/templates/Danau-Toba.png" alt="Surface Image">
+            </div>
+            <div class="section image-section">
+                <h3>Underwater Image</h3>
+                <img src="/templates/sunlight-shining-the-surface-under-260nw-2327309483.webp" alt="Underwater Image">
+            </div>
+        </div>
+
+        <div class="right-column">
+            <div class="section boat-tracker">
+                <h2>Boat Tracker</h2>
+                <canvas id="trajectoryChart"></canvas>
+                 <h3>Geo-tag Info:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Waktu & Tanggal</th>
+                            <th>Koordinat</th>
+                            <th>SOG (km/h)</th>
+                            <th>COG (°)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>Senin, 28 Juli 2025</td><td>-6.212020, 106.8949101</td><td>20</td><td>45 &deg;</td></tr>
+                        <tr><td>2</td><td>Senin, 28 Juli 2025</td><td>-6.212020, 106.8949101</td><td>20</td><td>45 &deg;</td></tr>
+                        <tr><td>3</td><td>Senin, 28 Juli 2025</td><td>-6.212020, 106.8949101</td><td>20</td><td>45 &deg;</td></tr>
+                        <tr><td>4</td><td>Senin, 28 Juli 2025</td><td>-6.212020, 106.8949101</td><td>20</td><td>45 &deg;</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="section live-streaming">
+                <h2>Live Streaming</h2>
+                <div class="video-container">
+                    <iframe id="visual-video" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+/* --- General & Dark Theme --- */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #1a1a1a; /* Latar belakang utama gelap */
+    color: #e0e0e0; /* Warna teks terang */
+}
+
+h1, h2, h3 {
+    color: #ffffff;
+    margin-top: 0;
+    font-weight: normal;
+}
+
+/* --- Header --- */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #009B4E; /* Warna Hijau UNJ */
+    color: #f0f0f0;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    border-bottom: 2px solid #007a3e; /* Aksen hijau lebih gelap */
+}
+
+.header-logo img {
+    width: 40px;
+    height: auto;
+    display: block;
+}
+
+/* --- Dashboard Grid Layout --- */
+.dashboard-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr; 
+    gap: 15px;
+    padding: 15px;
+}
+
+.left-column, .right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* --- Panel Styling (Section) --- */
+.section {
+    background-color: #2b2b2b;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #444;
+}
+
+/* --- Styling Spesifik per Panel --- */
+
+/* Tabel Umum */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+}
+
+th, td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid #444;
+}
+
+thead {
+    background-color: #383838;
+    color: #e0e0e0;
+}
+
+/* 1. Floating Ball Set Cheklist */
+.position-log h3 {
+    font-size: 1em;
+    color: #aaa;
+}
+
+/* Gaya untuk baris yang sudah di-checklist */
+.position-log tr.checked td:first-child {
+    text-decoration: line-through; /* Coret nama bola */
+    color: #888;
+}
+
+.position-log tr.checked td:last-child::before {
+    content: '✔ '; /* Tambahkan ikon ceklist */
+    color: #28a745; /* Warna hijau untuk ceklist */
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+/* Panel Gambar */
+.image-section img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+/* Boat Tracker (Chart & Position Log Table) */
+.boat-tracker {
+    flex: 1;
+}
+
+/* 2. Perbaikan Tabel Position-Log di Boat Tracker */
+.boat-tracker table {
+    margin-top: 50px; /* Beri jarak dari canvas chart */
+}
+
+.boat-tracker th {
+    font-weight: bold;
+}
+.boat-tracker td {
+    word-break: break-word;
+    max-width: 150px;
+}
+
+
+/* Rata kanan untuk data numerik (SOG, COG) agar rapi */
+.boat-tracker td:nth-child(4), /* Kolom SOG */
+.boat-tracker td:nth-child(5)  /* Kolom COG */
+{
+    text-align: left; 
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* Zebra-striping untuk memudahkan pembacaan baris */
+.boat-tracker tbody tr:nth-child(odd) {
+    background-color: #333;
+}
+
+
+canvas {
+    width: 100%;
+    height: 100%;
+    min-height: 250px;
+    background-color: #333;
+    border-radius: 4px;
+}
+
+/* Live Streaming (Video) */
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
