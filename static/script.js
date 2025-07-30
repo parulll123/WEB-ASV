@@ -12,7 +12,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const underwaterImgStatusSpan = document.getElementById('underwater-img-status');
     const finishStatusSpan = document.getElementById('finish-status');
     
-    const geoTableBody = document.querySelector('.boat-tracker table tbody');
+    // const geoTableBody = document.querySelector('.boat-tracker table tbody');
+    // PERBAIKAN: Gunakan getElementById untuk menargetkan tbody secara langsung
+    const geoTableBody = document.getElementById('geotag-tbody');
 
     // === SETUP CHART.JS ===
     const ctx = document.getElementById('trajectoryChart').getContext('2d');
@@ -83,8 +85,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 visualVideoIframe.src = data.other_indicators.visual_video_url;
             }
 
-            // 5. Update Geo-tag Info Table (DIPINDAHKAN KE SINI)
-            // Bagian ini sekarang akan berjalan setiap kali data baru diterima
+            // 5. Update Geo-tag Info Table
+            // Kode di bawah ini sekarang akan bekerja dengan sempurna menargetkan tbody
             geoTableBody.innerHTML = ''; // Kosongkan tabel sebelum diisi ulang
             data.geo_tags.forEach((entry, index) => {
                 const row = document.createElement('tr');
@@ -103,6 +105,25 @@ document.addEventListener('DOMContentLoaded', function () {
             // Anda bisa menambahkan notifikasi error di UI di sini jika perlu
         }
     }
+//     function updateDetectionData() {
+//     fetch('/get_detection_data')
+//         .then(response => response.json())
+//         .then(data => {
+//             document.getElementById('detectionData').innerHTML = `
+//                 <p>Bola terdeteksi: ${data.ball_count}</p>
+//                 ${data.positions.map((pos, i) => 
+//                     `<p>Bola ${i+1}: X=${pos[0]}, Y=${pos[1]}, Radius=${pos[2]}</p>`
+//                 ).join('')}
+//             `;
+//         });
+    
+//     setTimeout(updateDetectionData, 1000);  // Update setiap 1 detik
+// }
+
+// window.onload = function() {
+//     startVideo();
+//     updateDetectionData();
+// };
 
     // === MEMULAI FETCH DATA SECARA BERKALA ===
     fetchData(); // Panggil pertama kali saat halaman dimuat
