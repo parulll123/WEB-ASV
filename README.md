@@ -14,7 +14,7 @@ Sebuah platform monitoring berbasis web yang ringan dan real-time untuk **Autono
 
 ---
 
-##  Indonesian Version <a name="versi-bahasa-indonesia"></a>
+##  Indonesia <a name="versi-bahasa-indonesia"></a>
 
 ### 📌 Fitur Utama
 
@@ -146,7 +146,7 @@ Proyek ini dilisensikan di bawah [Lisensi MIT](LICENSE).
 ---
 ---
 
-## English Version <a name="english-version"></a>
+## English <a name="english-version"></a>
 
 ### 📌 Key Features
 
