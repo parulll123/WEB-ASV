@@ -5,3 +5,4 @@ web_ASV/
 # File cache Python
 __pycache__/
 *.pyc
+.vscode/

@@ -1,10 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // === SELEKSI ELEMEN ===
+    // === SELEKSI ELEMEN DOM ===
     const batteryLevelSpan = document.getElementById('battery-level');
     const sogValueSpan = document.getElementById('sog-value');
     const cogValueSpan = document.getElementById('cog-value');
-    const visualVideoIframe = document.getElementById('visual-video');
-
+    const geoTableBody = document.querySelector('.boat-tracker table tbody');
     const prepStatusSpan = document.getElementById('prep-status');
     const startStatusSpan = document.getElementById('start-status');
     const ballCountSpan = document.getElementById('ball-count');
@@ -12,48 +11,24 @@ document.addEventListener('DOMContentLoaded', function () {
     const underwaterImgStatusSpan = document.getElementById('underwater-img-status');
     const finishStatusSpan = document.getElementById('finish-status');
     
-    // const geoTableBody = document.querySelector('.boat-tracker table tbody');
-    // PERBAIKAN: Gunakan getElementById untuk menargetkan tbody secara langsung
-    const geoTableBody = document.getElementById('geotag-tbody');
+    // === SETUP PETA LEAFLET ===
+    // Inisialisasi peta dan atur view awal (misal: Jakarta) dan level zoom
+    const map = L.map('map').setView([-6.20, 106.81], 13);
 
-    // === SETUP CHART.JS ===
-    const ctx = document.getElementById('trajectoryChart').getContext('2d');
-    const trajectoryChart = new Chart(ctx, {
-        type: 'line', // Menggunakan tipe 'line' untuk plot Lat/Lon
-        data: {
-            datasets: [{
-                label: 'Trajectory',
-                data: [], // Data akan dalam format {x: longitude, y: latitude}
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1,
-                fill: false,
-                showLine: true // Pastikan garis terlihat
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                x: {
-                    type: 'linear',
-                    title: {
-                        display: true,
-                        text: 'Longitude'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Latitude'
-                    }
-                }
-            }
-        }
-    });
+    // Tambahkan 'tile layer' (gambar peta dasar) dari OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Variabel untuk menyimpan marker dan jejak (polyline)
+    let boatMarker = null;
+    let trajectoryPath = null;
+
 
     // === FUNGSI UTAMA PENGAMBIL DATA ===
     async function fetchData() {
         try {
-            const response = await fetch('/data'); // Mengambil data dari endpoint Flask /data
+            const response = await fetch('/data');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -71,23 +46,11 @@ document.addEventListener('DOMContentLoaded', function () {
             sogValueSpan.textContent = data.attitude_info.sog.toFixed(2) + ' knots';
             cogValueSpan.textContent = data.attitude_info.cog.toFixed(2) + ' degrees';
 
-            // 3. Update Trajectory Chart
-            const trajectoryPoints = data.attitude_info.trajectory.map(point => ({
-                x: point[0], // longitude
-                y: point[1]  // latitude
-            }));
-            trajectoryChart.data.datasets[0].data = trajectoryPoints;
-            trajectoryChart.update('none'); // 'none' untuk update tanpa animasi agar lebih mulus
-
-            // 4. Update Other Indicators
+            // 3. Update Other Indicators
             batteryLevelSpan.textContent = data.other_indicators.battery_level + ' %';
-            if (!visualVideoIframe.src.endsWith(data.other_indicators.visual_video_url)) {
-                visualVideoIframe.src = data.other_indicators.visual_video_url;
-            }
-
-            // 5. Update Geo-tag Info Table
-            // Kode di bawah ini sekarang akan bekerja dengan sempurna menargetkan tbody
-            geoTableBody.innerHTML = ''; // Kosongkan tabel sebelum diisi ulang
+            
+            // 4. Update Geo-tag Info Table
+            geoTableBody.innerHTML = '';
             data.geo_tags.forEach((entry, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -99,31 +62,36 @@ document.addEventListener('DOMContentLoaded', function () {
                 `;
                 geoTableBody.appendChild(row);
             });
+            
+            // 5. Update Peta (Marker dan Jejak)
+            const trajectoryPoints = data.attitude_info.trajectory;
+            if (trajectoryPoints.length > 0) {
+                const latestPoint = trajectoryPoints[trajectoryPoints.length - 1];
+                const latestLatLng = [latestPoint[0], latestPoint[1]];
+
+                // Update Penanda (Marker)
+                if (!boatMarker) {
+                    boatMarker = L.marker(latestLatLng).addTo(map)
+                        .bindPopup('Posisi Kapal Saat Ini.');
+                } else {
+                    boatMarker.setLatLng(latestLatLng);
+                }
+
+                // Update Jejak (Polyline)
+                if (!trajectoryPath) {
+                    trajectoryPath = L.polyline(trajectoryPoints, { color: 'blue' }).addTo(map);
+                } else {
+                    trajectoryPath.setLatLngs(trajectoryPoints);
+                }
+
+                // Atur view peta agar selalu mengikuti marker
+                map.setView(latestLatLng, 16);
+            }
 
         } catch (error) {
             console.error('Error fetching data:', error);
-            // Anda bisa menambahkan notifikasi error di UI di sini jika perlu
         }
     }
-//     function updateDetectionData() {
-//     fetch('/get_detection_data')
-//         .then(response => response.json())
-//         .then(data => {
-//             document.getElementById('detectionData').innerHTML = `
-//                 <p>Bola terdeteksi: ${data.ball_count}</p>
-//                 ${data.positions.map((pos, i) => 
-//                     `<p>Bola ${i+1}: X=${pos[0]}, Y=${pos[1]}, Radius=${pos[2]}</p>`
-//                 ).join('')}
-//             `;
-//         });
-    
-//     setTimeout(updateDetectionData, 1000);  // Update setiap 1 detik
-// }
-
-// window.onload = function() {
-//     startVideo();
-//     updateDetectionData();
-// };
 
     // === MEMULAI FETCH DATA SECARA BERKALA ===
     fetchData(); // Panggil pertama kali saat halaman dimuat
@@ -134,7 +102,3 @@ document.addEventListener('DOMContentLoaded', function () {
         clearInterval(intervalId);
     });
 });
-
-// KODE DI BAWAH INI DIHAPUS KARENA SALAH DAN REDUNDAN
-// setInterval(fetchData, 5000); 
-// }

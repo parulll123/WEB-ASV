@@ -4,9 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitoring Misi</title>
+    <title>Monitoring </title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <style>
+        #map { height: 400px; /* Atur tinggi peta sesuai kebutuhan */ }
+    </style>
     <title>Deteksi Bola</title>
 </head>
 
@@ -68,7 +72,9 @@
         <div class="right-column">
             <div class="section boat-tracker">
                 <h2>Boat Tracker</h2>
-                <canvas id="trajectoryChart"></canvas>
+                
+                <div id="map"></div>
+                <!-- <canvas id="trajectoryChart"></canvas> -->
                 <h3>Geo-tag Info:</h3>
                 <table>
                     <thead>
