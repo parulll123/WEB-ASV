@@ -1,80 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitoring </title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <title>Monitoring Cakra Vortex</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <style>
-        #map { height: 400px; /* Atur tinggi peta sesuai kebutuhan */ }
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        #map { height: 400px; }
     </style>
-    <title>Deteksi Bola</title>
 </head>
-
 <body>
     <header class="main-header">
         <div class="header-title">Cakra Vortex - Universitas Negeri Jakarta</div>
         <div class="header-logo">
-            <img src="/templates/logo-unj-new-ptnbh.png" alt="">
+            <img src="{{ url_for('static', filename='logo-unj-new-ptnbh.png') }}" alt="Logo UNJ">
         </div>
     </header>
 
     <div class="dashboard-container">
-
         <div class="left-column">
             <div class="section position-log">
                 <h2>Lintasan: A</h2>
-                <h3>Floating Ball Set Cheklist</h3>
+                <h3>Floating Ball Set Checklist</h3>
                 <table>
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Cheklist</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>ball 1</td>
-                            <td>Cheklist</td>
-                        </tr>
-                        <tr>
-                            <td>ball 2</td>
-                            <td>Cheklist</td>
-                        </tr>
-                        <tr>
-                            <td>ball 3</td>
-                            <td>Cheklist</td>
-                        </tr>
-                        <tr>
-                            <td>ball 4</td>
-                            <td>Cheklist</td>
-                        </tr>
-                        <tr>
-                            <td>ball 5</td>
-                            <td>Cheklist</td>
-                        </tr>
+                    <tbody id="checklist-tbody">
                     </tbody>
                 </table>
             </div>
             <div class="section image-section">
                 <h3>Surface Image</h3>
-                <img src="/templates/Danau-Toba.png" alt="Surface Image">
+                <img src="{{ url_for('static', filename='Danau-Toba.png') }}" alt="Surface Image">
             </div>
             <div class="section image-section">
                 <h3>Underwater Image</h3>
-                <img src="/templates/sunlight-shining-the-surface-under-260nw-2327309483.webp" alt="Underwater Image">
+                <img src="{{ url_for('static', filename='underwater.webp') }}" alt="Underwater Image">
             </div>
         </div>
 
         <div class="right-column">
             <div class="section boat-tracker">
                 <h2>Boat Tracker</h2>
-                
                 <div id="map"></div>
-                <!-- <canvas id="trajectoryChart"></canvas> -->
                 <h3>Geo-tag Info:</h3>
                 <table>
                     <thead>
@@ -82,30 +56,17 @@
                             <th>No</th>
                             <th>Waktu & Tanggal</th>
                             <th>Koordinat</th>
-                            <th>SOG (km/h)</th>
+                            <th>SOG (knots)</th>
                             <th>COG (°)</th>
                         </tr>
                     </thead>
                     <tbody id="geotag-tbody">
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
-            <div class="section live-streaming">
-                <h2>Live Streaming</h2>
-                <div class="video-container">
-                    <h1>Deteksi Bola Real-time</h1>
-                    <img id="videoFeed" src="{{ url_for('video_feed') }}" width="640" height="480">
-
-                    <div id="detectionData">
-                    </div>
-                </div>
             </div>
-        </div>
-    </div>
-
     </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
-
 </html>

@@ -1,0 +1,46 @@
+a// Flowchart Kapal Otomatis AI + Fail-safe Remote
+digraph {
+	rankdir=LR size=10
+	START [label=START color=lightgreen shape=ellipse style=filled]
+	BAT [label=Baterai color=lightcoral shape=parallelogram style=filled]
+	SW [label="Saklar: ON?" color=lightblue shape=diamond style=filled]
+	PWR [label="Distribusi Daya" color=lightcyan shape=box style=filled]
+	HP [label="Alur Daya Tinggi (ESC + Motor)" color=lightcyan shape=box style=filled]
+	LP [label="Alur Daya Rendah (Raspberry Pi + Servo)" color=lightcyan shape=box style=filled]
+	INIT [label="Inisialisasi Sistem & Program" color=lightcyan shape=box style=filled]
+	MODE [label="Pilih Mode Operasi" color=lightblue shape=diamond style=filled]
+	AUTO [label="Mode Otomatis (OpenCV)" color=lightcyan shape=box style=filled]
+	MANUAL [label="Mode Manual (Remote)" color=lightgrey shape=box style=filled]
+	RUN_AI [label="Gerakkan ESC & Servo sesuai AI" color=lightcyan shape=box style=filled]
+	COLLISION [label="Deteksi Tabrakan?" color=lightblue shape=diamond style=filled]
+	FAILSAFE [label="Pindah ke Mode Manual" color=orange shape=box style=filled]
+	RETURN [label="Kembali ke Start" color=lightgrey shape=box style=filled]
+	WEB [label="Web Monitoring (Status, Posisi, Baterai)" color=lightyellow shape=box style=filled]
+	EMG [label="Emergency Button?" color=lightblue shape=diamond style=filled]
+	CUT [label="Putuskan Daya Motor & Servo" color=lightcoral shape=box style=filled]
+	STOP [label="Sistem Mati" color=lightcyan shape=box style=filled]
+	START -> BAT
+	BAT -> SW
+	SW -> PWR [label=Yes color=green]
+	SW -> STOP [label=No color=red]
+	PWR -> HP
+	PWR -> LP
+	HP -> EMG
+	LP -> INIT
+	INIT -> MODE
+	MODE -> AUTO [label=Otomatis color=green]
+	MODE -> MANUAL [label=Manual color=blue]
+	AUTO -> RUN_AI
+	RUN_AI -> COLLISION
+	COLLISION -> FAILSAFE [label=Yes color=red]
+	FAILSAFE -> MANUAL
+	COLLISION -> RUN_AI [label=No color=green]
+	MANUAL -> RETURN
+	RETURN -> START
+	EMG -> CUT [label=Yes color=red]
+	CUT -> STOP
+	EMG -> RUN_AI [label=No color=green]
+	LP -> WEB
+	RUN_AI -> WEB [style=dashed]
+	MANUAL -> WEB [style=dashed]
+}
