@@ -1,0 +1,148 @@
+from flask import Flask, jsonify, render_template
+from flask_mqtt import Mqtt
+import json
+import base64
+import psycopg2
+from datetime import datetime
+import os
+
+app = Flask(__name__)
+
+# --- KONFIGURASI KONEKSI MQTT ---
+app.config['MQTT_BROKER_URL'] = 'broker.hivemq.com'
+app.config['MQTT_BROKER_PORT'] = 1883
+app.config['MQTT_USERNAME'] = ''
+app.config['MQTT_PASSWORD'] = ''
+app.config['MQTT_KEEPALIVE'] = 5
+app.config['MQTT_TLS_ENABLED'] = False
+
+# --- KONFIGURASI POSTGRESQL ---
+db_config = {
+    'dbname': 'your_database_name',  # Ganti dengan nama database
+    'user': 'your_username',        # Ganti dengan user PostgreSQL
+    'password': 'your_password',    # Ganti dengan password
+    'host': 'localhost',            # Ganti jika database di host lain
+    'port': '5432'                  # Port default PostgreSQL
+}
+
+# Fungsi untuk koneksi ke database
+def get_db_connection():
+    return psycopg2.connect(**db_config)
+
+mqtt = Mqtt(app)
+
+# --- VARIABEL GLOBAL UNTUK MENYIMPAN DATA TERAKHIR ---
+latest_data = {
+    "attitude_info": {
+        "sog": 0,
+        "cog": 0,
+        "trajectory": []
+    },
+    "geo_tags": [],
+    "floating_ball_checklist": [],
+    "other_indicators": {
+        "battery_level": 0
+    }
+}
+trajectory_history = []
+
+# --- FUNGSI CALLBACK MQTT ---
+@mqtt.on_connect()
+def handle_connect(client, userdata, flags, rc):
+    if rc == 0:
+        print("Connected to MQTT Broker!")
+        mqtt.subscribe('boat/geotag')
+        mqtt.subscribe('boat/checklist')
+        mqtt.subscribe('boat/surface_image')
+        mqtt.subscribe('boat/underwater_image')
+    else:
+        print(f"Failed to connect, return code {rc}\n")
+
+@mqtt.on_message()
+def handle_mqtt_message(client, userdata, message):
+    global latest_data, trajectory_history
+    
+    topic = message.topic
+    payload = message.payload.decode()
+    
+    print(f"Received message on topic {topic}: {payload[:50]}...")
+    
+    if topic == 'boat/geotag':
+        payload_json = json.loads(payload)
+        payload_json["timestamp"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+        new_lat = payload_json.get("latitude", 0)
+        new_lon = payload_json.get("longitude", 0)
+        
+        latest_data["attitude_info"]["sog"] = payload_json.get("sog", 0)
+        latest_data["attitude_info"]["cog"] = payload_json.get("cog", 0)
+        latest_data["geo_tags"] = [payload_json]
+        latest_data["other_indicators"]["battery_level"] = payload_json.get("battery", 0)
+
+        trajectory_history.append([new_lat, new_lon])
+        if len(trajectory_history) > 200:
+            trajectory_history.pop(0)
+        latest_data["attitude_info"]["trajectory"] = trajectory_history
+
+    elif topic == 'boat/checklist':
+        payload_json = json.loads(payload)
+        latest_data["floating_ball_checklist"] = payload_json.get("balls", [])
+
+    elif topic == 'boat/surface_image':
+        # Decode base64 dan simpan ke file
+        image_data = base64.b64decode(payload)
+        with open('static/surface.jpg', 'wb') as f:
+            f.write(image_data)
+        print("Surface image updated!")
+        
+        # Simpan ke PostgreSQL
+        try:
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute(
+                "INSERT INTO images (image_type, image_data) VALUES (%s, %s)",
+                ('surface', psycopg2.Binary(image_data))
+            )
+            conn.commit()
+            cur.close()
+            conn.close()
+            print("Surface image saved to PostgreSQL!")
+        except Exception as e:
+            print(f"Error saving surface image to PostgreSQL: {e}")
+
+    elif topic == 'boat/underwater_image':
+        # Decode base64 dan simpan ke file
+        image_data = base64.b64decode(payload)
+        with open('static/underwater.jpg', 'wb') as f:
+            f.write(image_data)
+        print("Underwater image updated!")
+        
+        # Simpan ke PostgreSQL
+        try:
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute(
+                "INSERT INTO images (image_type, image_data) VALUES (%s, %s)",
+                ('underコード
+water', psycopg2.Binary(image_data))
+            )
+            conn.commit()
+            cur.close()
+            conn.close()
+            print("Underwater image saved to PostgreSQL!")
+        except Exception as e:
+            print(f"Error saving underwater image to PostgreSQL: {e}")
+
+# --- RUTE FLASK ---
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/data')
+def data():
+    return jsonify(latest_data)
+
+if __name__ == '__main__':
+    # Pastikan folder static ada
+    if not os.path.exists('static'):
+        os.makedirs('static')
+    app.run(debug=True, port=5050)

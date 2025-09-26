@@ -1,15 +1,15 @@
-/* --- General & Dark Theme --- */
+/* --- General & Theme --- */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
-    background-color: #1a1a1a; /* Latar belakang utama gelap */
-    color: #e0e0e0; /* Warna teks terang */
+    background-color: #000000; /* A deeper, cooler dark blue */
+    color: #f0f0f0;
 }
 
 h1, h2, h3 {
     color: #ffffff;
     margin-top: 0;
-    font-weight: normal;
+    font-weight: 300; /* Lighter font weight for a modern feel */
 }
 
 /* --- Header --- */
@@ -17,15 +17,15 @@ h1, h2, h3 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #009B4E; /* Warna Hijau UNJ */
+    background-color: #101216; /* Darker header for contrast */
     color: #f0f0f0;
-    padding: 10px 20px;
-    font-size: 1.2em;
-    border-bottom: 2px solid #007a3e; /* Aksen hijau lebih gelap */
+    padding: 12px 24px;
+    font-size: 1.3em;
+    border-bottom: 3px solid #00aaff; /* A vibrant blue accent */
 }
 
 .header-logo img {
-    width: 40px;
+    width: 45px;
     height: auto;
     display: block;
 }
@@ -33,109 +33,70 @@ h1, h2, h3 {
 /* --- Dashboard Grid Layout --- */
 .dashboard-container {
     display: grid;
-    grid-template-columns: 1fr 2fr; 
-    gap: 15px;
-    padding: 15px;
+    grid-template-columns: 1fr 2.5fr; /* Adjust column ratio for better balance */
+    gap: 20px;
+    padding: 20px;
 }
 
 .left-column, .right-column {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
 }
 
-/* --- Panel Styling (Section) --- */
+/* --- Panel Styling (Card) --- */
 .section {
-    background-color: #2b2b2b;
-    padding: 20px;
-    border-radius: 5px;
-    border: 1px solid #444;
+    background-color: #242830; /* Lighter card background */
+    padding: 25px;
+    border-radius: 8px;
+    border: 1px solid #333943;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* --- Styling Spesifik per Panel --- */
+.section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
 
-/* Tabel Umum */
+/* --- Table Styling --- */
 table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.9em;
+    font-size: 0.95em;
 }
 
 th, td {
-    padding: 8px 12px;
+    padding: 12px 15px;
     text-align: left;
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid #333943;
 }
 
 thead {
-    background-color: #383838;
+    background-color: #2c313a;
     color: #e0e0e0;
+    font-weight: 600;
 }
 
-/* 1. Floating Ball Set Cheklist */
-.position-log h3 {
-    font-size: 1em;
-    color: #aaa;
+tbody tr:nth-child(even) {
+    background-color: #2c313a;
 }
 
-/* Gaya untuk baris yang sudah di-checklist */
-.position-log tr.checked td:first-child {
-    text-decoration: line-through; /* Coret nama bola */
-    color: #888;
-}
-
-.position-log tr.checked td:last-child::before {
-    content: '✔ '; /* Tambahkan ikon ceklist */
-    color: #28a745; /* Warna hijau untuk ceklist */
-    font-weight: bold;
-    margin-right: 5px;
-}
-
-/* Panel Gambar */
+/* --- Image Sections --- */
 .image-section img {
     width: 100%;
     height: auto;
-    border-radius: 4px;
+    border-radius: 6px;
+    border: 1px solid #444;
 }
 
-/* Boat Tracker (Chart & Position Log Table) */
-.boat-tracker {
-    flex: 1;
-}
-
-/* 2. Perbaikan Tabel Position-Log di Boat Tracker */
+/* --- Boat Tracker --- */
 .boat-tracker table {
-    margin-top: 50px; /* Beri jarak dari canvas chart */
+    margin-top: 20px;
 }
 
-.boat-tracker th {
-    font-weight: bold;
+.boat-tracker td:nth-child(4),
+.boat-tracker td:nth-child(5) {
+    text-align: left;
+    font-family: 'Fira Code', 'Courier New', Courier, monospace;
 }
-.boat-tracker td {
-    word-break: break-word;
-    max-width: 150px;
-}
-
-
-/* Rata kanan untuk data numerik (SOG, COG) agar rapi */
-.boat-tracker td:nth-child(4), /* Kolom SOG */
-.boat-tracker td:nth-child(5)  /* Kolom COG */
-{
-    text-align: left; 
-    font-family: 'Courier New', Courier, monospace;
-}
-
-/* Zebra-striping untuk memudahkan pembacaan baris */
-.boat-tracker tbody tr:nth-child(odd) {
-    background-color: #333;
-}
-
-
-canvas {
-    width: 100%;
-    height: 100%;
-    min-height: 250px;
-    background-color: #333;
-    border-radius: 4px;
-}
-

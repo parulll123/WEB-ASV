@@ -9,7 +9,7 @@ app = Flask(__name__)
 # --- KONFIGURASI KONEKSI MQTT ---
 # Ganti dengan alamat broker MQTT Anda.
 # Anda bisa menggunakan broker publik seperti 'broker.hivemq.com' untuk testing.
-app.config['MQTT_BROKER_URL'] = 'broker.hivemq.com'
+app.config['MQTT_BROKER_URL'] = '10.61.60.238'
 app.config['MQTT_BROKER_PORT'] = 1883
 app.config['MQTT_USERNAME'] = ''  # Kosongkan jika tidak ada autentikasi
 app.config['MQTT_PASSWORD'] = ''  # Kosongkan jika tidak ada autentikasi
@@ -23,6 +23,7 @@ mqtt = Mqtt(app)
 latest_data = {
     "attitude_info": {
         "sog": 0,
+        "speed" : 0,
         "cog": 0,
         "trajectory": []
     },
@@ -66,7 +67,7 @@ def handle_mqtt_message(client, userdata, message):
         # Update data geo-tag dan lintasan
         new_lat = payload.get("latitude", 0)
         new_lon = payload.get("longitude", 0)
-        
+        latest_data["attitude_info"]["speed"] = payload.get("speed", 0)
         latest_data["attitude_info"]["sog"] = payload.get("sog", 0)
         latest_data["attitude_info"]["cog"] = payload.get("cog", 0)
         latest_data["geo_tags"] = [payload] # Hanya tampilkan data terakhir di tabel
